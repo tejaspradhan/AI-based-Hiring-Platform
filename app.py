@@ -16,9 +16,13 @@ helper = Helper()
 # client = MongoClient('localhost', 27017)
 
 
-@app.route("/")
+@app.route("/employee")
 def index():
     return render_template('employee-signup.html')
+
+@app.route("/employer")
+def index1():
+    return render_template('employer-signup.html')
 
 
 @app.route("/employee/login", methods=['GET', 'POST'])
@@ -27,6 +31,17 @@ def employee_login():
     print(request.form['password'])
     return render_template('index.html')
 
+@app.route("/employer/login", methods=['GET', 'POST'])
+def employer_login():
+    print(request.form['username'])
+    print(request.form['password'])
+    return render_template('index.html')
+
+@app.route("/employer/signup", methods=['GET', 'POST'])
+def employer_signup():
+    print(request.form['username'])
+    print(request.form['password'])
+    return render_template('index.html')
 
 @app.route("/employee/signup", methods=['GET', 'POST'])
 def employee_signup():
