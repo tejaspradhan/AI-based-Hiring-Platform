@@ -20,5 +20,5 @@ proj db {
     proj id
     emplyer id
     skills req
-    employees applied
+    employees applied = []
 }
