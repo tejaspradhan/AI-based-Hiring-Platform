@@ -1,0 +1,24 @@
+Employee db = {
+    id
+    name
+    mail
+    contact
+    skills
+    password
+    proj id "job id for applied proj"
+}
+
+employer db = {
+    id
+    name
+    mail
+    contact
+    password
+}
+
+proj db {
+    proj id
+    emplyer id
+    skills req
+    employees applied
+}
