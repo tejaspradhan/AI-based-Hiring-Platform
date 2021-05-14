@@ -1,2 +1,6 @@
 flask
 pymongo
+docx2txt
+gensim
+nltk
+pdfminer3
