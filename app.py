@@ -1,4 +1,4 @@
-# from pymongo import MongoClient
+from pymongo import MongoClient
 
 from flask import Flask, url_for, render_template, request
 from werkzeug.utils import secure_filename
@@ -13,8 +13,8 @@ import io
 import os
 app = Flask(__name__)
 helper = Helper()
-# client = MongoClient('localhost', 27017)
-
+client = MongoClient('localhost', 27017)
+db=client.edi_hiring_db
 @app.route("/")
 def home():
     return render_template('index.html')
@@ -44,6 +44,13 @@ def employer_login():
 def employer_signup():
     print(request.form['username'])
     print(request.form['password'])
+    empr_details={"name":request.form['username'],
+    "email":request.form['email'],
+    "number":request.form['cnum'],
+    "password":request.form['password']}
+    employer=db.employer
+    empr_id=employer.insert_one(empr_details).inserted_id
+    print(empr_id)
     return render_template('index.html')
 
 @app.route("/employee/signup", methods=['GET', 'POST'])
@@ -62,6 +69,14 @@ def employee_signup():
         pdfText = fake_file_handle.getvalue()
         pdfText = helper.cleanTextAndTokenize(pdfText)
     os.remove(secure_filename(f.filename))
+    emp_details={"name":request.form['username'],
+    "email":request.form['email'],
+    "number":request.form['cnum'],
+    "password":request.form['password'],
+    "skills":pdfText}
+    employee=db.employee
+    emp_id=employee.insert_one(emp_details).inserted_id
+    print(emp_id)
     return render_template('index.html', text=pdfText)
 
 
