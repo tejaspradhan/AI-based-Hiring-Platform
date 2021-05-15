@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from flask import Flask, url_for, render_template, request
-from flask.ext.bcrypt impor Bcrypt
+from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from Helper import Helper
 from pdfminer3.layout import LAParams, LTTextBox
@@ -38,22 +38,22 @@ def employee_login():
     print(request.form['email'])
     print(request.form['password'])
     employee_cred = db.employee.find_one({'email': request.form['email']}, {
-                                         'name': 0, 'email': 1, 'password': 1})
-    print(employee_cred)
-    # bcrypt.check_password_hash(pwd from db, request.form['password'])
-    return render_template('index.html')
-
+                                         'email': 1, 'password': 1})
+    if(bcrypt.check_password_hash(employee_cred['password'], request.form['password'])):
+        return render_template('index.html')
+    else:
+        return render_template('blanktrial.html')
 
 @app.route("/employer/login", methods=['GET', 'POST'])
 def employer_login():
-    print(request.form['username'])
+    print(request.form['email'])
     print(request.form['password'])
     employer_cred = db.employer.find_one({'email': request.form['email']}, {
-                                         'name': 0, 'email': 1, 'password': 1})
-    print(employer_cred)
-    # bcrypt.check_password_hash(pwd from db, request.form['password'])
-    return render_template('index.html')
-
+                                          'email': 1, 'password': 1})
+    if(bcrypt.check_password_hash(employer_cred['password'], request.form['password'])):
+        return render_template('index.html')
+    else:
+        return render_template('blanktrial.html')
 
 @ app.route("/employer/signup", methods=['GET', 'POST'])
 def employer_signup():
@@ -85,10 +85,11 @@ def employee_signup():
         pdfText = fake_file_handle.getvalue()
         pdfText = helper.cleanTextAndTokenize(pdfText)
     os.remove(secure_filename(f.filename))
+    password_hash = bcrypt.generate_password_hash(request.form['password'], 10)
     emp_details = {"name": request.form['name'],
                    "email": request.form['email'],
                    "number": request.form['cnum'],
-                   "password": request.form['password'],
+                   "password": password_hash,
                    "skills": pdfText}
     emp_id = db.employee.insert_one(emp_details).inserted_id
     print(emp_id)
