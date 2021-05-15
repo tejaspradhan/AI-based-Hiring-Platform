@@ -85,10 +85,11 @@ def employee_signup():
         pdfText = fake_file_handle.getvalue()
         pdfText = helper.cleanTextAndTokenize(pdfText)
     os.remove(secure_filename(f.filename))
+    password_hash = bcrypt.generate_password_hash(request.form['password'], 10)
     emp_details = {"name": request.form['name'],
                    "email": request.form['email'],
                    "number": request.form['cnum'],
-                   "password": request.form['password'],
+                   "password": password_hash,
                    "skills": pdfText}
     emp_id = db.employee.insert_one(emp_details).inserted_id
     print(emp_id)
