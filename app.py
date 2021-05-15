@@ -25,12 +25,12 @@ def home():
 
 @app.route("/employee")
 def index():
-    return render_template('employee-signup.html')
+    return render_template('employee-login.html')
 
 
 @app.route("/employer")
 def index1():
-    return render_template('employer-signup.html')
+    return render_template('employer-login.html')
 
 
 @app.route("/employee/login", methods=['GET', 'POST'])
@@ -39,10 +39,12 @@ def employee_login():
     print(request.form['password'])
     employee_cred = db.employee.find_one({'email': request.form['email']}, {
                                          'email': 1, 'password': 1})
+    if(not bool(employee_cred)):
+        return render_template('employee-signup.html')
     if(bcrypt.check_password_hash(employee_cred['password'], request.form['password'])):
         return render_template('index.html')
     else:
-        return render_template('blanktrial.html')
+        return render_template('employee-signup.html')
 
 @app.route("/employer/login", methods=['GET', 'POST'])
 def employer_login():
@@ -50,10 +52,12 @@ def employer_login():
     print(request.form['password'])
     employer_cred = db.employer.find_one({'email': request.form['email']}, {
                                           'email': 1, 'password': 1})
+    if(not bool(employer_cred)):
+        return render_template('employer-signup.html')
     if(bcrypt.check_password_hash(employer_cred['password'], request.form['password'])):
         return render_template('index.html')
     else:
-        return render_template('blanktrial.html')
+        return render_template('employer-signup.html')
 
 @ app.route("/employer/signup", methods=['GET', 'POST'])
 def employer_signup():
