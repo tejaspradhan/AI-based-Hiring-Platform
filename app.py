@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from flask import Flask, url_for, render_template, request
-from flask.ext.bcrypt impor Bcrypt
+from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from Helper import Helper
 from pdfminer3.layout import LAParams, LTTextBox
