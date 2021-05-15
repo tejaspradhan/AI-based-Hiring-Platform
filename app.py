@@ -15,6 +15,9 @@ app = Flask(__name__)
 helper = Helper()
 # client = MongoClient('localhost', 27017)
 
+@app.route("/")
+def home():
+    return render_template('index.html')
 
 @app.route("/employee")
 def index():
