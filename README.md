@@ -10,3 +10,15 @@ The recommendation algorithm uses **TF-IDF + Cosine Similarity**
 ## How to Run
 1. install requirements.txt using ***pip install -r requirements.txt***
 2. Run the app using ***python app.py*** or ***flask run***
+
+<br>
+<br>
+
+## Contributors 
+<br>
+<br>
+
+
+<a href="https://github.com/tejaspradhan/AI-based-Hiring-Platform/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=tejaspradhan/AI-based-Hiring-Platform" />
+</a>
