@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from flask import Flask, url_for, render_template, request
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
-from Helper import Helper
+from Helpers.Helper import Helper
 from pdfminer3.layout import LAParams, LTTextBox
 from pdfminer3.pdfpage import PDFPage
 from pdfminer3.pdfinterp import PDFResourceManager
@@ -46,18 +46,20 @@ def employee_login():
     else:
         return render_template('employee-signup.html')
 
+
 @app.route("/employer/login", methods=['GET', 'POST'])
 def employer_login():
     print(request.form['email'])
     print(request.form['password'])
     employer_cred = db.employer.find_one({'email': request.form['email']}, {
-                                          'email': 1, 'password': 1})
+        'email': 1, 'password': 1})
     if(not bool(employer_cred)):
         return render_template('employer-signup.html')
     if(bcrypt.check_password_hash(employer_cred['password'], request.form['password'])):
         return render_template('index.html')
     else:
         return render_template('employer-signup.html')
+
 
 @ app.route("/employer/signup", methods=['GET', 'POST'])
 def employer_signup():
