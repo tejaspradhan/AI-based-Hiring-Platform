@@ -20,20 +20,6 @@ from pdfminer3.converter import PDFPageAggregator
 from pdfminer3.converter import TextConverter
 import io
 
-# pip install pdfminer3
-# pip install docx2txt #https://github.com/ankushshah89/python-docx2txt
-# pip install nltk
-# nltk.download('punkt')
-# pip install Cython
-# pip install --upgrade smart-open
-# pip install NumPy
-# pip install gensim
-# pip install fse
-# pip install pattern
-# nltk.download('wordnet')
-# pip install spacy
-# python -m spacy download en
-
 resumeList = []
 
 File_Root_Path = "E:\\@Prasoon\\NonGoogleDrive\\@MetalBrain\\HRLanes\\Resumes"

@@ -25,12 +25,13 @@ def home():
 
 @app.route("/employee")
 def index():
-    return render_template('employee-login.html')
+    return render_template('employee-signup.html')
 
 
 @app.route("/employer")
 def index1():
-    return render_template('employer-login.html')
+    print("hi")
+    return render_template('employer-signup.html')
 
 
 @app.route("/employee/login", methods=['GET', 'POST'])
@@ -103,4 +104,4 @@ def employee_signup():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
