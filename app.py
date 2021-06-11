@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from flask import Flask, url_for, render_template, request, session
+from flask import Flask, url_for, render_template, request, session, redirect
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from Helpers.Helper import Helper
@@ -11,12 +11,12 @@ from pdfminer3.converter import PDFPageAggregator
 from pdfminer3.converter import TextConverter
 import io
 import os
+
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 helper = Helper()
 client = MongoClient('localhost', 27017)
 db = client.edi_hiring_db
-emid = ''
 app.config['SECRET_KEY'] = '14ec258c169f5c19f78385bcc83a51df7444624b2ff90449b4a9832e6fe706a1'
 
 @app.route("/")
@@ -37,7 +37,6 @@ def index1():
 
 @app.route("/employee/login", methods=['GET', 'POST'])
 def employee_login():
-    global emid
     print(request.form['email'])
     print(request.form['password'])
     employee_cred = db.employee.find_one({'email': request.form['email']}, {
@@ -45,8 +44,12 @@ def employee_login():
     if(not bool(employee_cred)):
         return render_template('employee-signup.html')
     if(bcrypt.check_password_hash(employee_cred['password'], request.form['password'])):
-        emid = employee_cred['_id']
+        session["email"] = employee_cred['email']
         proj = db.projects.find()
+        # skills_array=[]
+        # for i in proj:
+        #     print("id in i",i["_id"])
+        # needs to be changed
         return render_template('employee-dashboard.html', alljobs=proj)
     else:
         return render_template('employee-signup.html')
@@ -112,7 +115,7 @@ def employee_signup():
 @app.route("/employer/addJobs", methods=['POST'])
 def add_jobs():
     proj_title = request.form['title']
-    proj_skills = request.form['skills']
+    proj_skills = helper.cleanTextAndTokenize(request.form['skills'])
     print("Session email",session['empemail'])
     job_details = {
                     "email": session['empemail'],
@@ -125,15 +128,24 @@ def add_jobs():
     jobs=db.projects.find({"email":session['empemail']})
     return render_template('employer-dashboard.html',jobs=jobs)
 
-@app.route("/employee/apply/<project_id>", methods=["GET", "POST"])
-def apply_project(project_id):
-    print(project_id)
-    global emid
-    """db.projects.update(
-           { _id: project_id },
-           { $push: {appliedemp : emid } }
-       )"""
-    return render_template("employee-dashboard.html")
+@app.route("/employee/apply/<project_name>", methods=["GET", "POST"])
+def apply_project(project_name):
+    print(project_name)
+    appliedemp=db.projects.find_one({"title":project_name})["appliedemp"]
+    appliedemp.append(session["email"])
+    print("applied emp",appliedemp)
+    
+    db.projects.update(
+           { "title": project_name },
+           { "$set":{"appliedemp":appliedemp} }
+       )
+
+    return redirect("/employee_dashboard")
+    
+@app.route("/employee_dashboard", methods=["GET", "POST"])
+def show_dashboard():
+    proj = db.projects.find()
+    return render_template('employee-dashboard.html', alljobs=proj)
 
 if __name__ == '__main__':
     app.run(debug=True)

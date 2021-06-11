@@ -82,25 +82,18 @@
             </div>
         </header>
         <!-- End Header -->
-        <section>
+        
+        <section style="padding-top: 150px;">
+            <h1 style="text-align: center; padding-bottom: 30px;">Active Projects</h1>
             <div class="row">
                 {% for cmp in jobs %}
                     <div class="col-6 col-lg-6">
                         <div class="card-container">
                             <div class="card card-1">
-                                <div class="card__icon">
-                                    <i class="fas fa-bolt"></i>
-                                </div>
-                                <p class="card__exit">
-                                    <i class="fas fa-times"></i>
-                                </p>
-                                <h2 class="card__title">{{ cmp.title }}</h2><br>
-                                <p class="card__title">{{ cmp.appliedemp }}</h2>
-                                <p class="card__apply">
-                                    <a href="/employee/apply/{{cmp._id}}">Apply Now
-                                        <i class="fas fa-arrow-right"></i>
-                                    </a>
-                                </p>
+                                <h2 class="card__title" style="color:black;text-align:center;">{{ cmp.title }}</h2>
+                                {% for i in cmp.appliedemp %}
+                                    <p  style="color:black;">{{ i }}</p><br>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
