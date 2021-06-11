@@ -10,14 +10,24 @@
 </head>
 <body>
     <section>
-        {{ myjobs }}
+        {% for cmp in jobs %}
+          <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="box"style="height: 250px;">
+              <i class="fa fa-file-pdf-o fa-4x" aria-hidden="true"></i><br><br>
+              <h3 style="color: #012970;">{{ cmp }}</h3>
+              <ul>
+                
+              </ul>
+            </div>
+          </div>
+          {% endfor %}
     </section>
     <section>
-        <form method="POST" action="/addJobs">
+        <form method="POST" action="/employer/addJobs">
             <label for="title"><b>Project Title</b></label>
             <input type="text" name="title" placeholder="Enter Project Title">
             <label for="skills"><b>Required skills</b></label>
-            <input type="text" name="title" placeholder="Enter required skills">
+            <input type="text" name="skills" placeholder="Enter required skills">
             <input type="submit" style="btn btn-success">Add
         </form>
     </section>

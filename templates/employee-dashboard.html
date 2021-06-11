@@ -11,7 +11,19 @@
         {{ recjobs }}
     </section>
     <section>
-        {{ alljobs }}
+        {% for cmp in alljobs %}
+          <div class="col-lg-3 col-md-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="box"style="height: 250px;">
+              <form method="POST" action="/employee/apply/{{ cmp._id }}">
+                <h3 style="color: #012970;">{{ cmp }}</h3>
+                <button type="submit"></button>
+                <ul>
+                  
+                </ul>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
     </section>
 </body>
 </html>
