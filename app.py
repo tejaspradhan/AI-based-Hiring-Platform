@@ -125,14 +125,15 @@ def add_jobs():
     print(empr_id)
     return render_template('employer-dashboard.html')
 
-@app.route("/employee/apply/<project_id>", method=["POST"])
-def apply_project():
+@app.route("/employee/apply/<project_id>", methods=["GET", "POST"])
+def apply_project(project_id):
+    
     global emid
-    db.projects.update(
+    """db.projects.update(
            { _id: project_id },
            { $push: {appliedemp : emid } }
-       )
-    return render_template('employee-dashboard.html')
+       )"""
+    return render_template("employee-dashboard.html")
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
