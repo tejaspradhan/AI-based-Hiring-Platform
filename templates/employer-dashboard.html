@@ -51,7 +51,7 @@
   ======================================================== -->
     </head>
 
-    <body>
+    <body style="background-color: #DFEEEA;"">
 
         <!-- ======= Header ======= -->
         <header id="header" class="fixed-top">
@@ -89,28 +89,45 @@
                 {% for cmp in jobs %}
                     <div class="col-6 col-lg-6">
                         <div class="card-container">
-                            <div class="card card-1">
-                                <h2 class="card__title" style="color:black;text-align:center;">{{ cmp.title }}</h2>
-                                {% for i in cmp.appliedemp %}
-                                    <p  style="color:black;">{{ i }}</p><br>
-                                {% endfor %}
+                            <div class="card card-4">
+                                <div>
+                                    <h2 class="card__title" style="color:black;text-align:center;">{{ cmp.title }}</h2>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    {% for i in cmp.appliedemp %}
+                                        <div class="col-lg-6" style="padding-left: 35px;">
+                                            <p  style="color:black;">{{ i }}</p><br>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         </section>
-        <section>
+        <section style="font-size: 1.5rem; background-color: #DFEEEA;">
+            <h2 style="text-align: center; padding: 30px 30px;">Add a New Project</h2>
             <form method="POST" action="/employer/addJobs">
-                <label for="title">
-                    <b>Project Title</b>
-                </label>
-                <input type="text" name="title" placeholder="Enter Project Title">
-                <label for="skills">
-                    <b>Required skills</b>
-                </label>
-                <input type="text" name="skills" placeholder="Enter required skills">
-                <input type="submit" class="btn btn-success">
+                <div class="row" style="text-align: center;">
+                    <div class="col-lg-6">
+                        <label for="title">
+                            <b>Project Title</b>
+                        </label>
+                        <br><br>
+                        <input type="text" name="title">
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="skills">
+                            <b>Required skills</b>
+                        </label>
+                        <br><br>
+                        <input type="text" name="skills">
+                    </div>
+                </div><br><br>
+                <center><input type="submit" class="btn btn-success" style="font-size: 1.5rem;"></center>
+
             </form>
         </section>
         <!-- ======= Footer ======= -->

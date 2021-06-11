@@ -62,12 +62,21 @@
     {% for cmp in alljobs %}
         <div class="col-6 col-lg-6">
             <div class="card-container">
-                <div class="card card-1">
-                  <div class="card__icon"><i class="fas fa-bolt"></i></div>
-                  <p class="card__exit"><i class="fas fa-times"></i></p>
-                  <h2 class="card__title">{{ cmp.title }}</h2><br>
-                  <p class="card__title">{{ cmp.skills }}</h2>
-                  <p class="card__apply"><a href="/employee/apply/{{cmp.title}}">Apply Now <i class="fas fa-arrow-right"></i></a></p>
+                <div class="card card-4">
+                  <div>
+                    <h2 class="card__title" style="color:black;text-align:center;">{{ cmp.title }}</h2>
+                  </div>
+                  <br>
+                  <div class="row">
+                    {% for i in cmp.skills %}
+                      <div class="col-lg-6" style="padding-left: 35px;">
+                          <p  style="color:black;">{{ i }}</p><br>
+                      </div>
+                    {% endfor %}       
+                  </div>
+                  <div>
+                  <center><a href="/employee/apply/{{cmp.title}}"><p class="btn btn-light" style="text-align: center;font-size: 1.4rem;">Apply Now</p></a></center>
+                  </div>
                 </div>
         </div>
     </div>
