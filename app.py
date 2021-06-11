@@ -16,8 +16,8 @@ bcrypt = Bcrypt(app)
 helper = Helper()
 client = MongoClient('localhost', 27017)
 db = client.edi_hiring_db
-empemail = ''
 emid = ''
+app.config['SECRET_KEY'] = '14ec258c169f5c19f78385bcc83a51df7444624b2ff90449b4a9832e6fe706a1'
 
 @app.route("/")
 def home():
@@ -54,7 +54,6 @@ def employee_login():
 
 @app.route("/employer/login", methods=['GET', 'POST'])
 def employer_login():
-    global empemail
     print(request.form['email'])
     print(request.form['password'])
     employer_cred = db.employer.find_one({'email': request.form['email']}, {
@@ -62,9 +61,9 @@ def employer_login():
     if(not bool(employer_cred)):
         return render_template('employer-signup.html')
     if(bcrypt.check_password_hash(employer_cred['password'], request.form['password'])):
-        empemail = employer_cred['email']
-        job = db.projects.find({'email': empemail})
-        print(job)
+        session['empemail'] = employer_cred['email']
+        job = db.projects.find({'email': session['empemail']})
+        print("hello",job)
         return render_template('employer-dashboard.html', jobs=job)
     else:
         return render_template('employer-signup.html')
@@ -112,22 +111,23 @@ def employee_signup():
 
 @app.route("/employer/addJobs", methods=['POST'])
 def add_jobs():
-    global empemail
     proj_title = request.form['title']
     proj_skills = request.form['skills']
+    print("Session email",session['empemail'])
     job_details = {
-                    "email": empemail,
+                    "email": session['empemail'],
                     "title": proj_title,
                     "skills": proj_skills,
                     "appliedemp": []
                     }
     empr_id = db.projects.insert_one(job_details).inserted_id
     print(empr_id)
-    return render_template('employer-dashboard.html')
+    jobs=db.projects.find({"email":session['empemail']})
+    return render_template('employer-dashboard.html',jobs=jobs)
 
 @app.route("/employee/apply/<project_id>", methods=["GET", "POST"])
 def apply_project(project_id):
-    
+    print(project_id)
     global emid
     """db.projects.update(
            { _id: project_id },
@@ -136,4 +136,4 @@ def apply_project(project_id):
     return render_template("employee-dashboard.html")
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True)
