@@ -45,12 +45,7 @@ def employee_login():
         return render_template('employee-signup.html')
     if(bcrypt.check_password_hash(employee_cred['password'], request.form['password'])):
         session["email"] = employee_cred['email']
-        proj = db.projects.find()
-        # skills_array=[]
-        # for i in proj:
-        #     print("id in i",i["_id"])
-        # needs to be changed
-        return render_template('employee-dashboard.html', alljobs=proj)
+        return redirect("/employee_dashboard")
     else:
         return render_template('employee-signup.html')
 
@@ -126,7 +121,7 @@ def add_jobs():
     empr_id = db.projects.insert_one(job_details).inserted_id
     print(empr_id)
     jobs=db.projects.find({"email":session['empemail']})
-    return render_template('employer-dashboard.html',jobs=jobs)
+    return redirect('/employer_dashboard')
 
 @app.route("/employee/apply/<project_name>", methods=["GET", "POST"])
 def apply_project(project_name):
@@ -143,9 +138,20 @@ def apply_project(project_name):
     return redirect("/employee_dashboard")
     
 @app.route("/employee_dashboard", methods=["GET", "POST"])
-def show_dashboard():
+def show_dashboard_emp():
     proj = db.projects.find()
-    return render_template('employee-dashboard.html', alljobs=proj)
+    projects =[]
+    proj_name=[]
+    for i in proj:
+        print(i["title"],i["skills"])
+    recjobs=[]
+    return render_template('employee-dashboard.html', alljobs=proj,recjobs=recjobs)
+
+@app.route("/employer_dashboard", methods=["GET", "POST"])
+def show_dashboard_empr():
+    job = db.projects.find({'email': session['empemail']})
+    print("hello",job)
+    return render_template('employer-dashboard.html', jobs=job)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -8,7 +8,9 @@ import re
 import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
-
+from gensim.corpora import Dictionary
+from gensim.models import TfidfModel
+from gensim.similarities import Similarity
 
 class Helper:
     def __init__(self):
@@ -25,6 +27,17 @@ class Helper:
             if(token not in self.stop_words):
                 cleanToken.append(token)
         return cleanToken
+
+    def recommend(self, projects, jdtext, project_names):
+        dictionary = Dictionary(projects)
+        corpus = [dictionary.doc2bow(text) for text in projects]
+        model = TfidfModel(corpus)
+        similarity_object = Similarity(
+            'similarity.index', model[corpus], num_features=len(dictionary))
+        cleaned_bow = dictionary.doc2bow(jdtext)
+        cleaned_tfidf = model[cleaned_bow]
+        similarity_scores = similarity_object[cleaned_tfidf]  #finding similarity
+        return similarity_scores
 
     # def createDictionary(self, ex):
     #     '''
