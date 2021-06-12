@@ -19,6 +19,7 @@ client = MongoClient('localhost', 27017)
 db = client.edi_hiring_db
 app.config['SECRET_KEY'] = '14ec258c169f5c19f78385bcc83a51df7444624b2ff90449b4a9832e6fe706a1'
 
+
 @app.route("/")
 def home():
     return render_template('index.html')
@@ -45,7 +46,8 @@ def employee_login():
         return render_template('employee-signup.html')
     if(bcrypt.check_password_hash(employee_cred['password'], request.form['password'])):
         session["email"] = employee_cred['email']
-        return redirect("/employee_dashboard")
+        job = db.projects.find()
+        return render_template('employee-dashboard.html', alljobs=job)
     else:
         return render_template('employee-signup.html')
 
@@ -61,7 +63,7 @@ def employer_login():
     if(bcrypt.check_password_hash(employer_cred['password'], request.form['password'])):
         session['empemail'] = employer_cred['email']
         job = db.projects.find({'email': session['empemail']})
-        print("hello",job)
+        print("hello", job)
         return render_template('employer-dashboard.html', jobs=job)
     else:
         return render_template('employer-signup.html')
@@ -107,51 +109,56 @@ def employee_signup():
     print(emp_id)
     return render_template('employee-login.html')
 
+
 @app.route("/employer/addJobs", methods=['POST'])
 def add_jobs():
     proj_title = request.form['title']
     proj_skills = helper.cleanTextAndTokenize(request.form['skills'])
-    print("Session email",session['empemail'])
+    print("Session email", session['empemail'])
     job_details = {
-                    "email": session['empemail'],
-                    "title": proj_title,
-                    "skills": proj_skills,
-                    "appliedemp": []
-                    }
+        "email": session['empemail'],
+        "title": proj_title,
+        "skills": proj_skills,
+        "appliedemp": []
+    }
     empr_id = db.projects.insert_one(job_details).inserted_id
     print(empr_id)
-    jobs=db.projects.find({"email":session['empemail']})
+    jobs = db.projects.find({"email": session['empemail']})
     return redirect('/employer_dashboard')
+
 
 @app.route("/employee/apply/<project_name>", methods=["GET", "POST"])
 def apply_project(project_name):
     print(project_name)
-    appliedemp=db.projects.find_one({"title":project_name})["appliedemp"]
+    appliedemp = db.projects.find_one({"title": project_name})["appliedemp"]
     appliedemp.append(session["email"])
-    print("applied emp",appliedemp)
-    
-    db.projects.update(
-           { "title": project_name },
-           { "$set":{"appliedemp":appliedemp} }
-       )
+    print("applied emp", appliedemp)
 
-    return redirect("/employee_dashboard")
-    
+    db.projects.update(
+        {"title": project_name},
+        {"$set": {"appliedemp": appliedemp}}
+    )
+    job = db.projects.find()
+    return render_template('employee-dashboard.html', alljobs=job)
+
+
 @app.route("/employee_dashboard", methods=["GET", "POST"])
 def show_dashboard_emp():
     proj = db.projects.find()
-    projects =[]
-    proj_name=[]
+    projects = []
+    proj_name = []
     for i in proj:
-        print(i["title"],i["skills"])
-    recjobs=[]
-    return render_template('employee-dashboard.html', alljobs=proj,recjobs=recjobs)
+        print(i["title"], i["skills"])
+    recjobs = []
+    return render_template('employee-dashboard.html', alljobs=proj, recjobs=recjobs)
+
 
 @app.route("/employer_dashboard", methods=["GET", "POST"])
 def show_dashboard_empr():
     job = db.projects.find({'email': session['empemail']})
-    print("hello",job)
+    print("hello", job)
     return render_template('employer-dashboard.html', jobs=job)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
