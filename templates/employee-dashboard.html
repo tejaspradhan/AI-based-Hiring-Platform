@@ -87,23 +87,17 @@
             <h1 style="text-align: center; padding-bottom: 30px;">Projects Available</h1>
             <div class="row">
                 {% for cmp in alljobs %}
-                    <div class="col-6 col-lg-6">
+                    <div class="col-6 col-lg-6" style="align-items: center;">
                         <div class="card-container">
                             <div class="card card-4">
                                 <div>
-                                    <h2 class="card__title" style="color:black;text-align:center;">{{ cmp.title }}</h2>
+                                    <h2 class="card__title" style="color:black;text-align:center;">{{cmp}}</h2>
                                 </div>
-                                <br>
                                 <div class="row">
-                                    {% for i in cmp.skills %}
-                                        <div class="col-lg-6" style="padding-left: 35px;">
-                                            <p style="color:black;">{{ i }}</p><br>
-                                        </div>
-                                    {% endfor %}
                                 </div>
-                                <div>
+                                <div style="padding-top: 100px;">
                                     <center>
-                                        <a href="/employee/apply/{{cmp.title}}">
+                                        <a href="/employee/apply/{{cmp}}">
                                             <p class="btn btn-light" style="text-align: center;font-size: 1.4rem;">Apply Now</p>
                                         </a>
                                     </center>
@@ -122,19 +116,14 @@
                         <div class="card-container">
                             <div class="card card-4">
                                 <div>
-                                    <h2 class="card__title" style="color:black;text-align:center;">{{ cmp.title }}</h2>
+                                    <h2 class="card__title" style="color:black;text-align:center;">{{ cmp}}</h2>
                                 </div>
                                 <br>
                                 <div class="row">
-                                    {% for i in cmp.skills %}
-                                        <div class="col-lg-6" style="padding-left: 35px;">
-                                            <p style="color:black;">{{ i }}</p><br>
-                                        </div>
-                                    {% endfor %}
                                 </div>
                                 <div>
                                     <center>
-                                        <a href="/employee/apply/{{cmp.title}}">
+                                        <a href="/employee/apply/{{cmp}}">
                                             <p class="btn btn-light" style="text-align: center;font-size: 1.4rem;">Apply Now</p>
                                         </a>
                                     </center>

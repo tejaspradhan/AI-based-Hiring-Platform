@@ -82,14 +82,14 @@
             </div>
         </header>
         <!-- End Header -->
-        
+
         <section style="padding-top: 150px;">
             <h1 style="text-align: center; padding-bottom: 30px;">Active Projects</h1>
-            <div class="row">
+            <div class="row" style="padding-left: 100px;">
                 {% for cmp in jobs %}
                     <div class="col-6 col-lg-6">
-                        <div class="card-container">
-                            <div class="card card-4">
+                        <div class="card-container" >
+                            <div class="card card-4" style="width: 600px;" >
                                 <div>
                                     <h2 class="card__title" style="color:black;text-align:center;">{{ cmp.title }}</h2>
                                 </div>
@@ -97,7 +97,7 @@
                                 <div class="row">
                                     {% for i in cmp.appliedemp %}
                                         <div class="col-lg-6" style="padding-left: 35px;">
-                                            <p  style="color:black;">{{ i }}</p><br>
+                                            <p  style="color:black;">{{ i[0] }} : {{i[1]}}</p><br>
                                         </div>
                                     {% endfor %}
                                 </div>

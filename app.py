@@ -20,11 +20,6 @@ db = client.edi_hiring_db
 app.config['SECRET_KEY'] = '14ec258c169f5c19f78385bcc83a51df7444624b2ff90449b4a9832e6fe706a1'
 
 
-@app.route("/")
-def home():
-    return render_template('index.html')
-
-
 @app.route("/employee")
 def index():
     return render_template('employee-signup.html')
@@ -41,13 +36,14 @@ def employee_login():
     print(request.form['email'])
     print(request.form['password'])
     employee_cred = db.employee.find_one({'email': request.form['email']}, {
-                                         'email': 1, 'password': 1})
+                                         'email': 1, 'password': 1, 'name': 1})
     if(not bool(employee_cred)):
         return render_template('employee-signup.html')
     if(bcrypt.check_password_hash(employee_cred['password'], request.form['password'])):
         session["email"] = employee_cred['email']
+        session["name"] = employee_cred['name']
         job = db.projects.find()
-        return render_template('employee-dashboard.html', alljobs=job)
+        return redirect('/employee_dashboard')
     else:
         return render_template('employee-signup.html')
 
@@ -131,7 +127,7 @@ def add_jobs():
 def apply_project(project_name):
     print(project_name)
     appliedemp = db.projects.find_one({"title": project_name})["appliedemp"]
-    appliedemp.append(session["email"])
+    appliedemp.append([session["name"], session["email"]])
     print("applied emp", appliedemp)
 
     db.projects.update(
@@ -139,25 +135,36 @@ def apply_project(project_name):
         {"$set": {"appliedemp": appliedemp}}
     )
     job = db.projects.find()
-    return render_template('employee-dashboard.html', alljobs=job)
+    return redirect('/employee_dashboard')
 
 
 @app.route("/employee_dashboard", methods=["GET", "POST"])
 def show_dashboard_emp():
     proj = db.projects.find()
+    resume_text = db.employee.find_one({'email': session['email']})["skills"]
     projects = []
-    proj_name = []
+    project_names = []
     for i in proj:
-        print(i["title"], i["skills"])
-    recjobs = []
-    return render_template('employee-dashboard.html', alljobs=proj, recjobs=recjobs)
+        projects.append(i["skills"])
+        project_names.append(i["title"])
+    recjobs = helper.recommend(projects, resume_text, project_names)
+    return render_template('employee-dashboard.html', alljobs=project_names, recjobs=recjobs, skills=projects)
 
 
-@app.route("/employer_dashboard", methods=["GET", "POST"])
+@ app.route("/employer_dashboard", methods=["GET", "POST"])
 def show_dashboard_empr():
     job = db.projects.find({'email': session['empemail']})
     print("hello", job)
     return render_template('employer-dashboard.html', jobs=job)
+
+
+@app.route('/')
+def home():
+    userscnt = db.employee.count()
+    empcnt = db.employer.count()
+
+    pdfcnt = db.projects.count()
+    return render_template('index.html', empcnt=empcnt, cnt=userscnt, pdf=pdfcnt)
 
 
 if __name__ == '__main__':

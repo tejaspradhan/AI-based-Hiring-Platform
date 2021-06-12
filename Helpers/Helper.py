@@ -1,3 +1,6 @@
+from gensim.similarities import Similarity
+from gensim.models import TfidfModel
+from gensim.corpora import Dictionary
 import docx2txt
 from datetime import date, timedelta
 import os
@@ -8,9 +11,7 @@ import re
 import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
-from gensim.corpora import Dictionary
-from gensim.models import TfidfModel
-from gensim.similarities import Similarity
+
 
 class Helper:
     def __init__(self):
@@ -29,6 +30,7 @@ class Helper:
         return cleanToken
 
     def recommend(self, projects, jdtext, project_names):
+        print("projects", projects)
         dictionary = Dictionary(projects)
         corpus = [dictionary.doc2bow(text) for text in projects]
         model = TfidfModel(corpus)
@@ -36,9 +38,19 @@ class Helper:
             'similarity.index', model[corpus], num_features=len(dictionary))
         cleaned_bow = dictionary.doc2bow(jdtext)
         cleaned_tfidf = model[cleaned_bow]
-        similarity_scores = similarity_object[cleaned_tfidf]  #finding similarity
-        return similarity_scores
-
+        # finding similarity
+        similarity_scores = similarity_object[cleaned_tfidf]
+        result = []
+        for i in range(len(similarity_scores)):
+            result.append((i, project_names[i]))
+        print(result)
+        result.sort(reverse=True)
+        final = []
+        for i in range(len(result)):
+            if(result[i][0] > 0.3):
+                final.append(result[i][1])
+        print(final)
+        return final
     # def createDictionary(self, ex):
     #     '''
     #     url = "https://hrlanesprodstorage1.blob.core.windows.net/public/master.json"
